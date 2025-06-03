@@ -89,34 +89,37 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Generate .env from secrets
+      - name: Generate clean .env from secrets
         run: |
-          echo "HOST=${{ secrets.HOST }}" > .env
-          echo "PROTOCOL=HTTPS" >> .env
-          echo "PORT=4001" >> .env
-          echo "DATABASE=${{ secrets.DATABASE }}" >> .env
-          echo "MONGO_PARENT_URI=${{ secrets.MONGO_PARENT_URI }}" >> .env
-          echo "MONGO_URI=${{ secrets.MONGO_URI }}" >> .env
-          echo "SECRET=${{ secrets.SECRET }}" >> .env
-          echo "EMAIL=${{ secrets.EMAIL }}" >> .env
-          echo "NAME=${{ secrets.NAME }}" >> .env
-          echo "REMAIL=${{ secrets.REMAIL }}" >> .env
-          echo "APPROVAL_EMAIL=${{ secrets.APPROVAL_EMAIL }}" >> .env
-          echo "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}" >> .env
-          echo "APPROVER_MAIL=${{ secrets.APPROVER_MAIL }}" >> .env
-          echo "RAZORPAY_KEY_ID=${{ secrets.RAZORPAY_KEY_ID }}" >> .env
-          echo "RAZORPAY_KEY_SECRET=${{ secrets.RAZORPAY_KEY_SECRET }}" >> .env
-          echo "PLAN_ID=${{ secrets.PLAN_ID }}" >> .env
-          echo "SENDGRID_KEY=${{ secrets.SENDGRID_KEY }}" >> .env
-          echo "SALESFORCE_AUTH_URL=${{ secrets.SALESFORCE_AUTH_URL }}" >> .env
-          echo "SALESFORCE_TOKEN_URL=${{ secrets.SALESFORCE_TOKEN_URL }}" >> .env
-          echo "SALESFORCE_REDIRECT_URI=${{ secrets.SALESFORCE_REDIRECT_URI }}" >> .env
-          echo "ENCRYPTION_KEY=${{ secrets.ENCRYPTION_KEY }}" >> .env
-          echo "CRYPTO_KEY=${{ secrets.CRYPTO_KEY }}" >> .env
-          echo "AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}" >> .env
-          echo "AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> .env
-          echo "AWS_REGION=${{ secrets.AWS_REGION }}" >> .env
-          echo "AWS_S3_BUCKET_NAME=${{ secrets.AWS_S3_BUCKET_NAME }}" >> .env
+          rm -f .env
+          {
+            echo "HOST=${{ secrets.HOST }}"
+            echo "PROTOCOL=HTTPS"
+            echo "PORT=4001"
+            echo "DATABASE=${{ secrets.DATABASE }}"
+            echo "MONGO_PARENT_URI=${{ secrets.MONGO_PARENT_URI }}"
+            echo "MONGO_URI=${{ secrets.MONGO_URI }}"
+            echo "SECRET=${{ secrets.SECRET }}"
+            echo "EMAIL=${{ secrets.EMAIL }}"
+            echo "NAME=${{ secrets.NAME }}"
+            echo "REMAIL=${{ secrets.REMAIL }}"
+            echo "APPROVAL_EMAIL=${{ secrets.APPROVAL_EMAIL }}"
+            echo "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}"
+            echo "APPROVER_MAIL=${{ secrets.APPROVER_MAIL }}"
+            echo "RAZORPAY_KEY_ID=${{ secrets.RAZORPAY_KEY_ID }}"
+            echo "RAZORPAY_KEY_SECRET=${{ secrets.RAZORPAY_KEY_SECRET }}"
+            echo "PLAN_ID=${{ secrets.PLAN_ID }}"
+            echo "SENDGRID_KEY=${{ secrets.SENDGRID_KEY }}"
+            echo "SALESFORCE_AUTH_URL=${{ secrets.SALESFORCE_AUTH_URL }}"
+            echo "SALESFORCE_TOKEN_URL=${{ secrets.SALESFORCE_TOKEN_URL }}"
+            echo "SALESFORCE_REDIRECT_URI=${{ secrets.SALESFORCE_REDIRECT_URI }}"
+            echo "ENCRYPTION_KEY=${{ secrets.ENCRYPTION_KEY }}"
+            echo "CRYPTO_KEY=${{ secrets.CRYPTO_KEY }}"
+            echo "AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}"
+            echo "AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}"
+            echo "AWS_REGION=${{ secrets.AWS_REGION }}"
+            echo "AWS_S3_BUCKET_NAME=${{ secrets.AWS_S3_BUCKET_NAME }}"
+          } > .env
 
       - name: Secure .env file
         run: chmod 600 .env
