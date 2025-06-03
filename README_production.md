@@ -1,4 +1,4 @@
-# 🚀 DevQA CI/CD Pipeline with GitHub Actions
+# 🚀 Production CI/CD Pipeline with GitHub Actions
 
 This repository contains a secure and production-ready CI/CD pipeline configuration for deploying a Node.js application using PM2 and GitHub Actions. Sensitive environment variables are managed through GitHub Secrets and automatically injected into a `.env` file at runtime.
 
@@ -69,7 +69,7 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches: [ "Production", "DEV-NEW" ]
+    branches: Production
   workflow_dispatch:
 
 jobs:
@@ -120,15 +120,12 @@ jobs:
 
       - name: Deploy with PM2
         run: |
-          if [ "${{ github.ref_name }}" = "DEV-NEW" ]; then
-            pm2 start server.js --name dddevnew || pm2 reload dddevnew
-          elif [ "${{ github.ref_name }}" = "Production" ]; then
-            pm2 start server.js --name ddprod || pm2 reload ddprod
-          fi
+          pm2 start server.js --name ddutkarshprod || pm2 reload ddutkarshprod
 
       - name: Clean up on failure
         if: failure()
         run: pm2 delete all || true
+
 ```
 ---
 ## ✅ Final Checklist
