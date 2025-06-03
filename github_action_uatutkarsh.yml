@@ -1,0 +1,85 @@
+name: utkarshindia
+
+on:
+  push:
+    branches: [ "Production" ]
+
+jobs:
+  build-and-deploy:
+    runs-on: self-hosted
+
+    strategy:
+      matrix:
+        node-version: [20.x]
+
+    env:  # Global env available to all steps unless overridden
+      NODE_ENV: production
+      MONGO_URI: ${{ secrets.MONGO_URI }}
+      DATABASE: ${{ secrets.DATABASE }}
+      SECRET: ${{ secrets.SECRET }}
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      RAZORPAY_KEY_ID: ${{ secrets.RAZORPAY_KEY_ID }}
+      RAZORPAY_KEY_SECRET: ${{ secrets.RAZORPAY_KEY_SECRET }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_REGION: ${{ secrets.AWS_REGION }}
+      AWS_S3_BUCKET_NAME: ${{ secrets.AWS_S3_BUCKET_NAME }}
+      UTKARSHINDIA_SENDGRID_KEY: ${{ secrets.UTKARSHINDIA_SENDGRID_KEY }}
+      ENCRYPTION_KEY: ${{ secrets.ENCRYPTION_KEY }}
+      CRYPTO_KEY: ${{ secrets.CRYPTO_KEY }}
+      HOST: ${{ secrets.HOST }}
+      PORT: ${{ secrets.PORT }}
+      LOGIN_URL: ${{ secrets.LOGIN_URL }}
+      SALESFORCE_AUTH_URL: ${{ secrets.SALESFORCE_AUTH_URL }}
+      SALESFORCE_TOKEN_URL: ${{ secrets.SALESFORCE_TOKEN_URL }}
+      SALESFORCE_REDIRECT_URI: ${{ secrets.SALESFORCE_REDIRECT_URI }}
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
+      - name: Cache Node Modules
+        uses: actions/cache@v4
+        with:
+          path: '**/node_modules'
+          key: node-modules-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            node-modules-${{ runner.os }}-
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Run Tests (Optional)
+        run: npm test
+        continue-on-error: true  # Optional, only if tests are not critical
+
+      - name: Cache Build Output
+        uses: actions/cache@v4
+        with:
+          path: build
+          key: build-output-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            build-output-${{ runner.os }}-
+
+      - name: Build Project
+        run: npm run build --if-present
+
+      - name: Start/Reload App with PM2
+        run: |
+          if ! pm2 pid ddutkarshprod > /dev/null; then
+            pm2 start server.js --name ddutkarshprod;
+          else
+            pm2 reload ddutkarshprod;
+          fi
+
+      - name: Clean Up PM2 (On Failure)
+        if: failure()
+        run: |
+          echo "Build failed. Cleaning up PM2 processes..."
+          pm2 delete all || true
