@@ -65,7 +65,6 @@ To prevent accidental exposure of credentials, ensure `.env` is excluded from ve
 Here’s the CI/CD pipeline defined in .github/workflows/deploy.yml
 
 ```bash
-
 name: CI/CD Pipeline
 
 on:
@@ -76,6 +75,63 @@ on:
 jobs:
   deploy:
     runs-on: self-hosted
+
+    env:
+      GITHUB_BRANCH: ${{ github.ref_name }}
+
+      # --- DEV ENV ---
+      DEV_HOST: ${{ secrets.DEV_HOST }}
+      DEV_DATABASE: ${{ secrets.DEV_DATABASE }}
+      DEV_MONGO_PARENT_URI: ${{ secrets.DEV_MONGO_PARENT_URI }}
+      DEV_MONGO_URI: ${{ secrets.DEV_MONGO_URI }}
+      DEV_SECRET: ${{ secrets.DEV_SECRET }}
+      DEV_EMAIL: ${{ secrets.DEV_EMAIL }}
+      DEV_NAME: ${{ secrets.DEV_NAME }}
+      DEV_REMAIL: ${{ secrets.DEV_REMAIL }}
+      DEV_APPROVAL_EMAIL: ${{ secrets.DEV_APPROVAL_EMAIL }}
+      DEV_OPENAI_API_KEY: ${{ secrets.DEV_OPENAI_API_KEY }}
+      DEV_APPROVER_MAIL: ${{ secrets.DEV_APPROVER_MAIL }}
+      DEV_RAZORPAY_KEY_ID: ${{ secrets.DEV_RAZORPAY_KEY_ID }}
+      DEV_RAZORPAY_KEY_SECRET: ${{ secrets.DEV_RAZORPAY_KEY_SECRET }}
+      DEV_PLAN_ID: ${{ secrets.DEV_PLAN_ID }}
+      DEV_SENDGRID_KEY: ${{ secrets.DEV_SENDGRID_KEY }}
+      DEV_SALESFORCE_AUTH_URL: ${{ secrets.DEV_SALESFORCE_AUTH_URL }}
+      DEV_SALESFORCE_TOKEN_URL: ${{ secrets.DEV_SALESFORCE_TOKEN_URL }}
+      DEV_SALESFORCE_REDIRECT_URI: ${{ secrets.DEV_SALESFORCE_REDIRECT_URI }}
+      DEV_ENCRYPTION_KEY: ${{ secrets.DEV_ENCRYPTION_KEY }}
+      DEV_CRYPTO_KEY: ${{ secrets.DEV_CRYPTO_KEY }}
+      DEV_AWS_ACCESS_KEY_ID: ${{ secrets.DEV_AWS_ACCESS_KEY_ID }}
+      DEV_AWS_SECRET_ACCESS_KEY: ${{ secrets.DEV_AWS_SECRET_ACCESS_KEY }}
+      DEV_AWS_REGION: ${{ secrets.DEV_AWS_REGION }}
+      DEV_AWS_S3_BUCKET_NAME: ${{ secrets.DEV_AWS_S3_BUCKET_NAME }}
+      DEV_LOGIN_URL: ${{ secrets.DEV_LOGIN_URL }}
+
+      # --- UAT ENV ---
+      UAT_HOST: ${{ secrets.UAT_HOST }}
+      UAT_DATABASE: ${{ secrets.UAT_DATABASE }}
+      UAT_MONGO_PARENT_URI: ${{ secrets.UAT_MONGO_PARENT_URI }}
+      UAT_MONGO_URI: ${{ secrets.UAT_MONGO_URI }}
+      UAT_SECRET: ${{ secrets.UAT_SECRET }}
+      UAT_EMAIL: ${{ secrets.UAT_EMAIL }}
+      UAT_NAME: ${{ secrets.UAT_NAME }}
+      UAT_REMAIL: ${{ secrets.UAT_REMAIL }}
+      UAT_APPROVAL_EMAIL: ${{ secrets.UAT_APPROVAL_EMAIL }}
+      UAT_OPENAI_API_KEY: ${{ secrets.UAT_OPENAI_API_KEY }}
+      UAT_APPROVER_MAIL: ${{ secrets.UAT_APPROVER_MAIL }}
+      UAT_RAZORPAY_KEY_ID: ${{ secrets.UAT_RAZORPAY_KEY_ID }}
+      UAT_RAZORPAY_KEY_SECRET: ${{ secrets.UAT_RAZORPAY_KEY_SECRET }}
+      UAT_PLAN_ID: ${{ secrets.UAT_PLAN_ID }}
+      UAT_SENDGRID_KEY: ${{ secrets.UAT_SENDGRID_KEY }}
+      UAT_SALESFORCE_AUTH_URL: ${{ secrets.UAT_SALESFORCE_AUTH_URL }}
+      UAT_SALESFORCE_TOKEN_URL: ${{ secrets.UAT_SALESFORCE_TOKEN_URL }}
+      UAT_SALESFORCE_REDIRECT_URI: ${{ secrets.UAT_SALESFORCE_REDIRECT_URI }}
+      UAT_ENCRYPTION_KEY: ${{ secrets.UAT_ENCRYPTION_KEY }}
+      UAT_CRYPTO_KEY: ${{ secrets.UAT_CRYPTO_KEY }}
+      UAT_AWS_ACCESS_KEY_ID: ${{ secrets.UAT_AWS_ACCESS_KEY_ID }}
+      UAT_AWS_SECRET_ACCESS_KEY: ${{ secrets.UAT_AWS_SECRET_ACCESS_KEY }}
+      UAT_AWS_REGION: ${{ secrets.UAT_AWS_REGION }}
+      UAT_AWS_S3_BUCKET_NAME: ${{ secrets.UAT_AWS_S3_BUCKET_NAME }}
+      UAT_LOGIN_URL: ${{ secrets.UAT_LOGIN_URL }}
 
     steps:
       - name: Checkout code
@@ -91,100 +147,60 @@ jobs:
         run: npm ci
 
       - name: Generate and validate .env file
+        shell: bash
         run: |
-          # Determine environment based on branch
-          if [[ "${{ github.ref_name }}" == "DEV-NEW" ]]; then
-            HOST=${{ secrets.DEV_HOST }}
-            DATABASE=${{ secrets.DEV_DATABASE }}
-            MONGO_PARENT_URI=${{ secrets.DEV_MONGO_PARENT_URI }}
-            MONGO_URI=${{ secrets.DEV_MONGO_URI }}
-            SECRET=${{ secrets.DEV_SECRET }}
-            EMAIL=${{ secrets.DEV_EMAIL }}
-            NAME=${{ secrets.DEV_NAME }}
-            REMAIL=${{ secrets.DEV_REMAIL }}
-            APPROVAL_EMAIL=${{ secrets.DEV_APPROVAL_EMAIL }}
-            OPENAI_API_KEY=${{ secrets.DEV_OPENAI_API_KEY }}
-            APPROVER_MAIL=${{ secrets.DEV_APPROVER_MAIL }}
-            RAZORPAY_KEY_ID=${{ secrets.DEV_RAZORPAY_KEY_ID }}
-            RAZORPAY_KEY_SECRET=${{ secrets.DEV_RAZORPAY_KEY_SECRET }}
-            PLAN_ID=${{ secrets.DEV_PLAN_ID }}
-            SENDGRID_KEY=${{ secrets.DEV_SENDGRID_KEY }}
-            SALESFORCE_AUTH_URL=${{ secrets.DEV_SALESFORCE_AUTH_URL }}
-            SALESFORCE_TOKEN_URL=${{ secrets.DEV_SALESFORCE_TOKEN_URL }}
-            SALESFORCE_REDIRECT_URI=${{ secrets.DEV_SALESFORCE_REDIRECT_URI }}
-            ENCRYPTION_KEY=${{ secrets.DEV_ENCRYPTION_KEY }}
-            CRYPTO_KEY=${{ secrets.DEV_CRYPTO_KEY }}
-            AWS_ACCESS_KEY_ID=${{ secrets.DEV_AWS_ACCESS_KEY_ID }}
-            AWS_SECRET_ACCESS_KEY=${{ secrets.DEV_AWS_SECRET_ACCESS_KEY }}
-            AWS_REGION=${{ secrets.DEV_AWS_REGION }}
-            AWS_S3_BUCKET_NAME=${{ secrets.DEV_AWS_S3_BUCKET_NAME }}
-            LOGIN_URL=${{ secrets.DEV_LOGIN_URL }}
-          elif [[ "${{ github.ref_name }}" == "UAT" ]]; then
-            HOST=${{ secrets.UAT_HOST }}
-            DATABASE=${{ secrets.UAT_DATABASE }}
-            MONGO_PARENT_URI=${{ secrets.UAT_MONGO_PARENT_URI }}
-            MONGO_URI=${{ secrets.UAT_MONGO_URI }}
-            SECRET=${{ secrets.UAT_SECRET }}
-            EMAIL=${{ secrets.UAT_EMAIL }}
-            NAME=${{ secrets.UAT_NAME }}
-            REMAIL=${{ secrets.UAT_REMAIL }}
-            APPROVAL_EMAIL=${{ secrets.UAT_APPROVAL_EMAIL }}
-            OPENAI_API_KEY=${{ secrets.UAT_OPENAI_API_KEY }}
-            APPROVER_MAIL=${{ secrets.UAT_APPROVER_MAIL }}
-            RAZORPAY_KEY_ID=${{ secrets.UAT_RAZORPAY_KEY_ID }}
-            RAZORPAY_KEY_SECRET=${{ secrets.UAT_RAZORPAY_KEY_SECRET }}
-            PLAN_ID=${{ secrets.UAT_PLAN_ID }}
-            SENDGRID_KEY=${{ secrets.UAT_SENDGRID_KEY }}
-            SALESFORCE_AUTH_URL=${{ secrets.UAT_SALESFORCE_AUTH_URL }}
-            SALESFORCE_TOKEN_URL=${{ secrets.UAT_SALESFORCE_TOKEN_URL }}
-            SALESFORCE_REDIRECT_URI=${{ secrets.UAT_SALESFORCE_REDIRECT_URI }}
-            ENCRYPTION_KEY=${{ secrets.UAT_ENCRYPTION_KEY }}
-            CRYPTO_KEY=${{ secrets.UAT_CRYPTO_KEY }}
-            AWS_ACCESS_KEY_ID=${{ secrets.UAT_AWS_ACCESS_KEY_ID }}
-            AWS_SECRET_ACCESS_KEY=${{ secrets.UAT_AWS_SECRET_ACCESS_KEY }}
-            AWS_REGION=${{ secrets.UAT_AWS_REGION }}
-            AWS_S3_BUCKET_NAME=${{ secrets.UAT_AWS_S3_BUCKET_NAME }}
-            LOGIN_URL=${{ secrets.UAT_LOGIN_URL }}
+          if [[ "$GITHUB_BRANCH" == "DEV-NEW" ]]; then
+            ENV_PREFIX="DEV"
+          elif [[ "$GITHUB_BRANCH" == "UAT" ]]; then
+            ENV_PREFIX="UAT"
           else
-            echo "Unsupported branch: ${{ github.ref_name }}"
+            echo "Unsupported branch: $GITHUB_BRANCH"
             exit 1
           fi
 
-          cat <<EOF > .env
-          HOST=$HOST
-          PROTOCOL=HTTPS
-          PORT=4001
-          DATABASE=$DATABASE
-          MONGO_PARENT_URI=$MONGO_PARENT_URI
-          MONGO_URI=$MONGO_URI
-          SECRET=$SECRET
-          EMAIL=$EMAIL
-          NAME=$NAME
-          REMAIL=$REMAIL
-          APPROVAL_EMAIL=$APPROVAL_EMAIL
-          OPENAI_API_KEY=$OPENAI_API_KEY
-          APPROVER_MAIL=$APPROVER_MAIL
-          RAZORPAY_KEY_ID=$RAZORPAY_KEY_ID
-          RAZORPAY_KEY_SECRET=$RAZORPAY_KEY_SECRET
-          PLAN_ID=$PLAN_ID
-          SENDGRID_KEY=$SENDGRID_KEY
-          SALESFORCE_AUTH_URL=$SALESFORCE_AUTH_URL
-          SALESFORCE_TOKEN_URL=$SALESFORCE_TOKEN_URL
-          SALESFORCE_REDIRECT_URI=$SALESFORCE_REDIRECT_URI
-          ENCRYPTION_KEY=$ENCRYPTION_KEY
-          CRYPTO_KEY=$CRYPTO_KEY
-          AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
-          AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
-          AWS_REGION=$AWS_REGION
-          AWS_S3_BUCKET_NAME=$AWS_S3_BUCKET_NAME
-          LOGIN_URL=$LOGIN_URL
-          EOF
+          echo "Generating .env for $ENV_PREFIX..."
 
-          # Validate all required variables
-          required_vars=(HOST DATABASE MONGO_PARENT_URI MONGO_URI SECRET EMAIL NAME REMAIL APPROVAL_EMAIL OPENAI_API_KEY APPROVER_MAIL RAZORPAY_KEY_ID RAZORPAY_KEY_SECRET PLAN_ID SENDGRID_KEY SALESFORCE_AUTH_URL SALESFORCE_TOKEN_URL SALESFORCE_REDIRECT_URI ENCRYPTION_KEY CRYPTO_KEY AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_REGION AWS_S3_BUCKET_NAME LOGIN_URL)
+          cat <<EOF > .env
+HOST=${!ENV_PREFIX_HOST}
+PROTOCOL=HTTPS
+PORT=4001
+DATABASE=${!ENV_PREFIX_DATABASE}
+MONGO_PARENT_URI=${!ENV_PREFIX_MONGO_PARENT_URI}
+MONGO_URI=${!ENV_PREFIX_MONGO_URI}
+SECRET=${!ENV_PREFIX_SECRET}
+EMAIL=${!ENV_PREFIX_EMAIL}
+NAME=${!ENV_PREFIX_NAME}
+REMAIL=${!ENV_PREFIX_REMAIL}
+APPROVAL_EMAIL=${!ENV_PREFIX_APPROVAL_EMAIL}
+OPENAI_API_KEY=${!ENV_PREFIX_OPENAI_API_KEY}
+APPROVER_MAIL=${!ENV_PREFIX_APPROVER_MAIL}
+RAZORPAY_KEY_ID=${!ENV_PREFIX_RAZORPAY_KEY_ID}
+RAZORPAY_KEY_SECRET=${!ENV_PREFIX_RAZORPAY_KEY_SECRET}
+PLAN_ID=${!ENV_PREFIX_PLAN_ID}
+SENDGRID_KEY=${!ENV_PREFIX_SENDGRID_KEY}
+SALESFORCE_AUTH_URL=${!ENV_PREFIX_SALESFORCE_AUTH_URL}
+SALESFORCE_TOKEN_URL=${!ENV_PREFIX_SALESFORCE_TOKEN_URL}
+SALESFORCE_REDIRECT_URI=${!ENV_PREFIX_SALESFORCE_REDIRECT_URI}
+ENCRYPTION_KEY=${!ENV_PREFIX_ENCRYPTION_KEY}
+CRYPTO_KEY=${!ENV_PREFIX_CRYPTO_KEY}
+AWS_ACCESS_KEY_ID=${!ENV_PREFIX_AWS_ACCESS_KEY_ID}
+AWS_SECRET_ACCESS_KEY=${!ENV_PREFIX_AWS_SECRET_ACCESS_KEY}
+AWS_REGION=${!ENV_PREFIX_AWS_REGION}
+AWS_S3_BUCKET_NAME=${!ENV_PREFIX_AWS_S3_BUCKET_NAME}
+LOGIN_URL=${!ENV_PREFIX_LOGIN_URL}
+EOF
+
+          # Validate required keys
+          required_vars=(
+            HOST DATABASE MONGO_PARENT_URI MONGO_URI SECRET EMAIL NAME REMAIL APPROVAL_EMAIL
+            OPENAI_API_KEY APPROVER_MAIL RAZORPAY_KEY_ID RAZORPAY_KEY_SECRET PLAN_ID SENDGRID_KEY
+            SALESFORCE_AUTH_URL SALESFORCE_TOKEN_URL SALESFORCE_REDIRECT_URI ENCRYPTION_KEY CRYPTO_KEY
+            AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_REGION AWS_S3_BUCKET_NAME LOGIN_URL
+          )
+
           for var in "${required_vars[@]}"; do
             if ! grep -q "^$var=" .env || grep -q "^$var=$" .env; then
-              echo "Error: Missing or empty value for $var"
+              echo "❌ Missing or empty value for $var"
               exit 1
             fi
           done
@@ -194,10 +210,10 @@ jobs:
 
       - name: Deploy with PM2
         run: |
-          echo "Deploying branch: ${{ github.ref_name }}"
-          if [[ "${{ github.ref_name }}" == "DEV-NEW" ]]; then
+          echo "Deploying branch: $GITHUB_BRANCH"
+          if [[ "$GITHUB_BRANCH" == "DEV-NEW" ]]; then
             pm2_app_name="dddevnew"
-          elif [[ "${{ github.ref_name }}" == "UAT" ]]; then
+          elif [[ "$GITHUB_BRANCH" == "UAT" ]]; then
             pm2_app_name="dduat"
           else
             echo "Unknown branch for PM2 deployment"
@@ -208,7 +224,9 @@ jobs:
 
       - name: Clean up on failure
         if: failure()
+        continue-on-error: true
         run: pm2 delete all || true
+
 ```
 ---
 ## ✅ Final Checklist
