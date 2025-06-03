@@ -69,7 +69,7 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches: Production
+    branches: [Production]
   workflow_dispatch:
 
 jobs:
@@ -118,13 +118,17 @@ jobs:
           echo "AWS_REGION=${{ secrets.AWS_REGION }}" >> .env
           echo "AWS_S3_BUCKET_NAME=${{ secrets.AWS_S3_BUCKET_NAME }}" >> .env
 
+      - name: Secure .env file
+        run: chmod 600 .env
+
       - name: Deploy with PM2
         run: |
           pm2 start server.js --name ddutkarshprod || pm2 reload ddutkarshprod
+          pm2 save
 
       - name: Clean up on failure
         if: failure()
-        run: pm2 delete all || true
+        run: pm2 delete ddutkarshprod || true
 
 ```
 ---
