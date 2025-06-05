@@ -89,6 +89,15 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Build the app (if build script exists)
+        run: |
+          if npm run | grep -q "build"; then
+            echo "✅ Build script found. Running npm run build..."
+            npm run build
+          else
+            echo "⚠️ No build script found in package.json. Skipping build step."
+          fi
+
       - name: Generate clean .env from secrets
         run: |
           rm -f .env
@@ -132,7 +141,6 @@ jobs:
       - name: Clean up on failure
         if: failure()
         run: pm2 delete ddutkarshprod || true
-
 ```
 ---
 ## ✅ Final Checklist
