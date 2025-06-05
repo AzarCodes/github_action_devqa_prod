@@ -96,3 +96,12 @@ jobs:
         run: pm2 delete web || true
 ```
 ----
+
+## ✅ Final Checklist
+
+-  Store all credentials as GitHub Secrets.
+-  Delete original **.env** file containing secrets from the repo.
+-   Add .env to *.gitignore*.
+-  Make sure PM2 is installed and globally available on the server.
+
+----

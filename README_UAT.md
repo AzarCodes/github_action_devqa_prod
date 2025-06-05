@@ -69,7 +69,7 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches: [DEV-NEW]
+    branches: [UAT]
   workflow_dispatch:
 
 jobs:
@@ -98,36 +98,36 @@ jobs:
             echo "⚠️ No build script found in package.json. Skipping build step."
           fi
 
-      - name: Generate .env file from DEV secrets
+      - name: Generate .env file from UAT secrets
         run: |
           {
-            echo "DEV_HOST=${{ secrets.DEV_HOST }}"
-            echo "DEV_PROTOCOL=HTTPS"
-            echo "DEV_PORT=4001"
-            echo "DEV_DATABASE=${{ secrets.DEV_DATABASE }}"
-            echo "DEV_MONGO_PARENT_URI=${{ secrets.DEV_MONGO_PARENT_URI }}"
-            echo "DEV_MONGO_URI=${{ secrets.DEV_MONGO_URI }}"
-            echo "DEV_SECRET=${{ secrets.DEV_SECRET }}"
-            echo "DEV_EMAIL=${{ secrets.DEV_EMAIL }}"
-            echo "DEV_NAME=${{ secrets.DEV_NAME }}"
-            echo "DEV_REMAIL=${{ secrets.DEV_REMAIL }}"
-            echo "DEV_APPROVAL_EMAIL=${{ secrets.DEV_APPROVAL_EMAIL }}"
-            echo "DEV_OPENAI_API_KEY=${{ secrets.DEV_OPENAI_API_KEY }}"
-            echo "DEV_APPROVER_MAIL=${{ secrets.DEV_APPROVER_MAIL }}"
-            echo "DEV_RAZORPAY_KEY_ID=${{ secrets.DEV_RAZORPAY_KEY_ID }}"
-            echo "DEV_RAZORPAY_KEY_SECRET=${{ secrets.DEV_RAZORPAY_KEY_SECRET }}"
-            echo "DEV_PLAN_ID=${{ secrets.DEV_PLAN_ID }}"
-            echo "DEV_SENDGRID_KEY=${{ secrets.DEV_SENDGRID_KEY }}"
-            echo "DEV_SALESFORCE_AUTH_URL=${{ secrets.DEV_SALESFORCE_AUTH_URL }}"
-            echo "DEV_SALESFORCE_TOKEN_URL=${{ secrets.DEV_SALESFORCE_TOKEN_URL }}"
-            echo "DEV_SALESFORCE_REDIRECT_URI=${{ secrets.DEV_SALESFORCE_REDIRECT_URI }}"
-            echo "DEV_ENCRYPTION_KEY=${{ secrets.DEV_ENCRYPTION_KEY }}"
-            echo "DEV_CRYPTO_KEY=${{ secrets.DEV_CRYPTO_KEY }}"
-            echo "DEV_AWS_ACCESS_KEY_ID=${{ secrets.DEV_AWS_ACCESS_KEY_ID }}"
-            echo "DEV_AWS_SECRET_ACCESS_KEY=${{ secrets.DEV_AWS_SECRET_ACCESS_KEY }}"
-            echo "DEV_AWS_REGION=${{ secrets.DEV_AWS_REGION }}"
-            echo "DEV_AWS_S3_BUCKET_NAME=${{ secrets.DEV_AWS_S3_BUCKET_NAME }}"
-            echo "DEV_LOGIN_URL=${{ secrets.DEV_LOGIN_URL }}"
+            echo "UAT_HOST=${{ secrets.UAT_HOST }}"
+            echo "UAT_PROTOCOL=HTTPS"
+            echo "UAT_PORT=4001"
+            echo "UAT_DATABASE=${{ secrets.UAT_DATABASE }}"
+            echo "UAT_MONGO_PARENT_URI=${{ secrets.UAT_MONGO_PARENT_URI }}"
+            echo "UAT_MONGO_URI=${{ secrets.UAT_MONGO_URI }}"
+            echo "UAT_SECRET=${{ secrets.UAT_SECRET }}"
+            echo "UAT_EMAIL=${{ secrets.UAT_EMAIL }}"
+            echo "UAT_NAME=${{ secrets.UAT_NAME }}"
+            echo "UAT_REMAIL=${{ secrets.UAT_REMAIL }}"
+            echo "UAT_APPROVAL_EMAIL=${{ secrets.UAT_APPROVAL_EMAIL }}"
+            echo "UAT_OPENAI_API_KEY=${{ secrets.UAT_OPENAI_API_KEY }}"
+            echo "UAT_APPROVER_MAIL=${{ secrets.UAT_APPROVER_MAIL }}"
+            echo "UAT_RAZORPAY_KEY_ID=${{ secrets.UAT_RAZORPAY_KEY_ID }}"
+            echo "UAT_RAZORPAY_KEY_SECRET=${{ secrets.UAT_RAZORPAY_KEY_SECRET }}"
+            echo "UAT_PLAN_ID=${{ secrets.UAT_PLAN_ID }}"
+            echo "UAT_SENDGRID_KEY=${{ secrets.UAT_SENDGRID_KEY }}"
+            echo "UAT_SALESFORCE_AUTH_URL=${{ secrets.UAT_SALESFORCE_AUTH_URL }}"
+            echo "UAT_SALESFORCE_TOKEN_URL=${{ secrets.UAT_SALESFORCE_TOKEN_URL }}"
+            echo "UAT_SALESFORCE_REDIRECT_URI=${{ secrets.UAT_SALESFORCE_REDIRECT_URI }}"
+            echo "UAT_ENCRYPTION_KEY=${{ secrets.UAT_ENCRYPTION_KEY }}"
+            echo "UAT_CRYPTO_KEY=${{ secrets.UAT_CRYPTO_KEY }}"
+            echo "UAT_AWS_ACCESS_KEY_ID=${{ secrets.UAT_AWS_ACCESS_KEY_ID }}"
+            echo "UAT_AWS_SECRET_ACCESS_KEY=${{ secrets.UAT_AWS_SECRET_ACCESS_KEY }}"
+            echo "UAT_AWS_REGION=${{ secrets.UAT_AWS_REGION }}"
+            echo "UAT_AWS_S3_BUCKET_NAME=${{ secrets.UAT_AWS_S3_BUCKET_NAME }}"
+            echo "UAT_LOGIN_URL=${{ secrets.UAT_LOGIN_URL }}"
           } > .env
 
       - name: Secure .env file
@@ -135,17 +135,18 @@ jobs:
 
       - name: Deploy with PM2
         run: |
-          pm2 start server.js --name dddevnew || pm2 reload dddevnew
+          pm2 start server.js --name dduat || pm2 reload dduat
           pm2 save
 
       - name: Clean up on failure
         if: failure()
-        run: pm2 delete dddevnew || true
+        run: pm2 delete dduat || true
 ```
----
+-----
 ## ✅ Final Checklist
 
 -  Store all credentials as GitHub Secrets.
 -  Delete original **.env** file containing secrets from the repo.
 -   Add .env to *.gitignore*.
 -  Make sure PM2 is installed and globally available on the server.
+----
