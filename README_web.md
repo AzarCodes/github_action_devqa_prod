@@ -56,9 +56,7 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      # Optional: Build the app (only if needed)
-      - name: Build the app
-        run: npm run build
+      # Build step removed
 
       - name: Generate .env file from secrets
         run: |
