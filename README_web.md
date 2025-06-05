@@ -56,7 +56,14 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      # Build step removed
+      - name: Build the app (if build script exists)
+        run: |
+          if npm run | grep -q "build"; then
+            echo "✅ Build script found. Running npm run build..."
+            npm run build
+          else
+            echo "⚠️ No build script found in package.json. Skipping build step."
+          fi
 
       - name: Generate .env file from secrets
         run: |
@@ -89,4 +96,3 @@ jobs:
         run: pm2 delete web || true
 ```
 ----
-
