@@ -1,4 +1,4 @@
-# 🚀 DevQA CI/CD Pipeline with GitHub Actions
+# 🚀 UAT CI/CD Pipeline with GitHub Actions
 
 This repository contains a secure and production-ready CI/CD pipeline configuration for deploying a Node.js application using PM2 and GitHub Actions. Sensitive environment variables are managed through GitHub Secrets and automatically injected into a `.env` file at runtime.
 
